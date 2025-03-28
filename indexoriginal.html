@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>UX_Masterclass_2025</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      .carousel-container {
+        position: relative;
+        width: 100%;
+        max-width: 100%;
+        margin: auto;
+        overflow: hidden;
+      }
+      .carousel {
+        display: flex;
+        width: 60%;
+        transition: transform 0.5s ease-in-out;
+        margin: 10%;
+      }
+      .carousel img {
+        min-width: 100%;
+        flex: 0 0 100%;
+        margin: 0px 50px;
+      }
+      .prev,
+      .next {
+        display: block;
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        background-color: rgba(0, 0, 0, 0.5);
+        color: white;
+        padding: 10px 19px;
+        cursor: pointer;
+        border: none;
+        border-radius: 50%;
+        z-index: 1;
+      }
+      .prev {
+        left: 10px;
+      }
+      .next {
+        right: 10px;
+      }
+      /* Infinite Scrolling Effect */
+      @keyframes scroll {
+        from {
+          transform: translateX(0);
+        }
+        to {
+          transform: translateX(-50%);
+        }
+      }
+      .notification {
+        display: none;
+        animation: fadeOut 10s forwards;
+        z-index: 100000;
+        margin-top: 1px !important;
+      }
+      .notification2 {
+        display: none;
+
+        z-index: 100000;
+        margin: 0px !important;
+        margin-bottom: -3px !important;
+      }
+      @keyframes fadeOut {
+        0% {
+          opacity: 1;
+        }
+        100% {
+          opacity: 0;
+          display: none;
+        }
+      }
+    </style>
+  </head>
+  <body class="bg-white-100">
+    <!-- Section 1: Responsive Image with Email Input -->
+    <div class="relative w-full h-auto">
+      <img
+        src="assets/1.png"
+        class="w-full h-auto object-cover"
+        alt="Responsive Image"
+      />
+      <div
+        class="absolute bottom-[1px] md:bottom-[1px] left-[9%] md:left-[9%] w-[35%] md:w-[35%] h-[50px] md:h-[21%] rounded-md flex flex-col space-y-1"
+      >
+        <input
+          id="email"
+          type="email"
+          placeholder="Enter your email"
+          class="p-1 md:p-3 border-[1px] md:border-2 rounded-sm md:rounded-md focus:outline-none w-full border-[#25b0c6] text-[0.4rem] md:text-[0.8rem]"
+        />
+        <div id="notification" class="notification">
+          <img
+            src="assets/Thank_you_banner.svg"
+            alt="svg"
+            style="width: 100%"
+          />
+        </div>
+        <div
+          id="notification2"
+          class="notification2 text-[0.4rem] md:text-[1rem]"
+        ></div>
+        <button
+          style="margin-top: 2%"
+          id="buttonid"
+          onclick="validateEmail()"
+          class="bg-[#25b0c6] text-white px-5 py-0.5 md:py-2 rounded-sm md:rounded-md w-max text-[0.4rem] md:text-[1rem]"
+        >
+          Notify Me
+        </button>
+      </div>
+    </div>
+
+    <!-- Section 2: Full-width Image -->
+    <div>
+      <img src="assets/2.png" class="w-full h-auto" alt="Full-width Image" />
+    </div>
+
+    <!-- Section 3: Responsive Image Carousel (With Navigation) -->
+    <div class="carousel-container">
+      <button class="prev" onclick="prevSlide()">&#10094;</button>
+      <div class="carousel" id="carousel">
+        <img src="assets/c4.png" alt="Carousel Image" />
+        <img src="assets/c1.png" alt="Carousel Image" />
+        <img src="assets/c2.png" alt="Carousel Image" />
+        <img src="assets/c3.png" alt="Carousel Image" />
+        <img src="assets/c4.png" alt="Carousel Image" />
+        <img src="assets/c1.png" alt="Carousel Image" />
+      </div>
+      <button class="next" onclick="nextSlide()">&#10095;</button>
+    </div>
+
+    <script>
+      let index = 1; // Start from first real image (not the clone)
+      const carousel = document.getElementById("carousel");
+      const images = document.querySelectorAll(".carousel img");
+      const totalImages = images.length;
+      const imgWidth = images[0].clientWidth + 20; // Image width + margin
+
+      // Move to the first real image initially
+      carousel.style.transform = `translateX(-${index * imgWidth}px)`;
+
+      function showSlide() {
+        carousel.style.transition = "transform 0.5s ease-in-out";
+        carousel.style.transform = `translateX(-${index * imgWidth}px)`;
+      }
+
+      // Next Slide Function
+      function nextSlide() {
+        if (index >= totalImages - 1) return; // Stop overflow
+        index++;
+        showSlide();
+
+        if (index === totalImages - 1) {
+          setTimeout(() => {
+            carousel.style.transition = "none";
+            index = 1;
+            carousel.style.transform = `translateX(-${index * imgWidth}px)`;
+          }, 500);
+        }
+      }
+
+      // Previous Slide Function (Loop to Last Image)
+      function prevSlide() {
+        if (index <= 0) return; // Stop overflow
+        index--;
+        showSlide();
+
+        if (index === 0) {
+          setTimeout(() => {
+            carousel.style.transition = "none";
+            index = totalImages - 2;
+            carousel.style.transform = `translateX(-${index * imgWidth}px)`;
+          }, 500);
+        }
+      }
+
+      // Auto-slide every 3 seconds
+      // setInterval(nextSlide, 3000);
+
+      function validateEmail() {
+        const emailInput = document.getElementById("email");
+        const email = emailInput.value;
+        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        const notification2 = document.getElementById("notification2");
+
+        notification2.style.display = "none";
+
+        if (!emailPattern.test(email)) {
+          const notification = document.getElementById("notification2");
+
+          notification.textContent = "Please enter a valid email address.";
+          notification.style.display = "block";
+          notification.style.color = "red";
+
+          return;
+        }
+        sendData(emailInput.value);
+
+        // emailInput.value = "";
+      }
+      const scriptURL =
+        "https://script.google.com/macros/s/AKfycbw2akzYSQsAlNDcgnEH-gUYrWus1ukZCLfSyRahCuhAdZeQs4fiLJ0ppJdo2rN1K4wN/exec"; // Replace with your actual URL
+
+      async function sendData(email) {
+        const data = {
+          name: "",
+          email: email,
+          message: "",
+        };
+
+        try {
+          const response = await fetch(scriptURL, {
+            method: "POST",
+            body: JSON.stringify(data),
+            headers: { "Content-Type": "application/json" },
+            mode: "no-cors", // Bypass CORS restriction
+          });
+          const notification = document.getElementById("notification");
+
+          notification.style.display = "block";
+          const buttonid = document.getElementById("buttonid");
+
+          buttonid.style.display = "none";
+          setTimeout(() => {
+            notification.style.display = "none";
+            buttonid.style.display = "block";
+            const emailInput = document.getElementById("email");
+            emailInput.value = "";
+          }, 8000);
+        } catch (error) {
+          console.error("Error sending data:", error);
+          const notification = document.getElementById("notification2");
+
+          notification.textContent = "Error while sending data.Please try again.";
+          notification.style.display = "block";
+          notification.style.color = "red";
+        }
+      }
+    </script>
+    <!--  -->
+
+    <!-- notification.textContent = "Thank you! You will be notified soon."; -->
+    <!-- Section 4: Responsive Left Image, Right YouTube Iframe -->
+    <div
+      class="flex flex-col md:flex-row items-center p-4 md:p-16 space-y-4 md:space-y-0 md:space-x-4"
+    >
+      <img
+        src="assets/4.png"
+        class="md:w-1/2 w-full rounded-lg"
+        alt="Left Image"
+      />
+      <iframe
+        class="md:w-1/2 w-full h-[200px] md:h-[386px]"
+        src="https://www.youtube.com/embed/8ss04UIF-Wk?si=SQJaLAl0cpDKbNnt"
+        title="YouTube video player"
+        frameborder="0"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+        referrerpolicy="strict-origin-when-cross-origin"
+        allowfullscreen
+      ></iframe>
+    </div>
+
+    <!-- Section 5: Full-width Image -->
+    <div>
+      <img
+        src="assets/3.png"
+        class="w-full h-auto"
+        alt="Full-width Section Image"
+      />
+    </div>
+  </body>
+</html>
